@@ -1,6 +1,6 @@
 package models
 
-// Repository represents a Github repository
+// Repository represents a GitHub repository
 type Repository struct {
 	Name            string `json:"name"`
 	FullName        string `json:"full_name"`
