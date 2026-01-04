@@ -46,12 +46,12 @@ build-all:
 ## test: Run all tests
 test:
 	@echo "Running tests..."
-	$(GOTEST) -v $(RACE_FLAG) -coverprofile=coverage.txt -covermode=atomic ./...
+	$(GOTEST) -v $(RACE_FLAG) -coverprofile=coverage.txt -covermode=set ./...
 
 ## test-race: Run all tests with race detection (requires CGO)
 test-race:
 	@echo "Running tests with race detection..."
-	CGO_ENABLED=1 $(GOTEST) -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+	CGO_ENABLED=1 $(GOTEST) -v -race -coverprofile=coverage.txt -covermode=set ./...
 
 ## test-unit: Run only unit tests
 test-unit:
