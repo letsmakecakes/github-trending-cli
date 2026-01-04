@@ -1,4 +1,4 @@
-.PHONY: build test test-unit test-integration clean install run lint coverage help
+.PHONY: build test test-unit test-integration test-race clean install run lint coverage help
 
 # Binary name
 BINARY_NAME=trending-repos
@@ -16,6 +16,13 @@ GOINSTALL=$(GOCMD) install
 
 # Build flags
 LDFLAGS=-ldflags "-s -w"
+
+# Detect OS for race detection
+ifeq ($(OS),Windows_NT)
+	RACE_FLAG=
+else
+	RACE_FLAG=-race
+endif
 
 all: test build
 
@@ -39,12 +46,17 @@ build-all:
 ## test: Run all tests
 test:
 	@echo "Running tests..."
-	$(GOTEST) -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+	$(GOTEST) -v $(RACE_FLAG) -coverprofile=coverage.txt -covermode=atomic ./...
+
+## test-race: Run all tests with race detection (requires CGO)
+test-race:
+	@echo "Running tests with race detection..."
+	CGO_ENABLED=1 $(GOTEST) -v -race -coverprofile=coverage.txt -covermode=atomic ./...
 
 ## test-unit: Run only unit tests
 test-unit:
 	@echo "Running unit tests..."
-	$(GOTEST) -v -short -race ./...
+	$(GOTEST) -v -short $(RACE_FLAG) ./...
 
 ## test-integration: Run only integration tests
 test-integration:
