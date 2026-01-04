@@ -20,8 +20,10 @@ LDFLAGS=-ldflags "-s -w"
 # Detect OS for race detection
 ifeq ($(OS),Windows_NT)
 	RACE_FLAG=
+	COVER_MODE=set
 else
 	RACE_FLAG=-race
+	COVER_MODE=atomic
 endif
 
 all: test build
@@ -46,12 +48,12 @@ build-all:
 ## test: Run all tests
 test:
 	@echo "Running tests..."
-	$(GOTEST) -v $(RACE_FLAG) -coverprofile=coverage.txt -covermode=set ./...
+	$(GOTEST) -v $(RACE_FLAG) -coverprofile=coverage.txt -covermode=$(COVER_MODE) ./...
 
 ## test-race: Run all tests with race detection (requires CGO)
 test-race:
 	@echo "Running tests with race detection..."
-	CGO_ENABLED=1 $(GOTEST) -v -race -coverprofile=coverage.txt -covermode=set ./...
+	CGO_ENABLED=1 $(GOTEST) -v -race -coverprofile=coverage.txt -covermode=atomic ./...
 
 ## test-unit: Run only unit tests
 test-unit:
